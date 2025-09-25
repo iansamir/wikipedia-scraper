@@ -1,41 +1,28 @@
 // wikipedia_scraper.rs
 // scrapes the paragraph elements in a wikipedia article and prints them
 
-use scraper::{Html, Selector};
-use std::fs::File;
-use std::io::{Write, BufWriter};
+mod wikipedia_scraper; 
+use std::io::{self, Write}; 
 
-fn main() {
-    // Download target HTML doc
-    let response = reqwest::blocking::get("https://wikipedia.org/wiki/Ariana_Grande");
-    let html_content = response.unwrap().text().unwrap();
-    let document = Html::parse_document(&html_content);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+     loop {
+        print!("scraper> "); 
+        io::stdout().flush()?; // flush prompt 
+        let mut input = String::new(); 
+        io::stdin().read_line(&mut input)?; 
 
-    // Create paragraph.txt 
-    let paragraph_file = File::create("paragraphs.txt").unwrap();
-    let mut paragraph_writer = BufWriter::new(paragraph_file);
-
-    // Select paragraph elements and write them to the file 
-    let selector = Selector::parse("p").unwrap();
-    for element in document.select(&selector) {
-        let text = element.text().collect::<Vec<_>>().join(" ");
-        paragraph_writer.write_all(text.as_bytes()).unwrap();
-        paragraph_writer.write_all(b"\n").unwrap();
-    }
-
-    // Create links.txt 
-    let links_file = File::create("links.txt").unwrap();
-    let mut link_writer = BufWriter::new(links_file);
-
-    // Select links and writes them to the file 
-    let selector = Selector::parse("a").unwrap();
-    for element in document.select(&selector) {
-        if let Some(href) = element.value().attr("href"){
-           link_writer.write_all(href.as_bytes()).unwrap();
-           link_writer.write_all(b"\n").unwrap(); 
+        let input = input.trim(); 
+        if input.eq_ignore_ascii_case("EXIT") {
+            break;
         }
-    }
-    
+
+        // call scraper 
+        wikipedia_scraper::wikipedia_scraper(input)?; 
+        println!("saved paragraphs.txt and links.txt for {}", input);  
+     }
+
+    Ok(())
+
 }
 
 
