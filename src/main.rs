@@ -1,5 +1,5 @@
-// wikipedia_scraper.rs
-// scrapes the paragraph elements in a wikipedia article and prints them
+// main.rs
+// loops over user input to scrape wiki articles 
 
 mod wikipedia_scraper; 
 use std::io::{self, Write}; 
