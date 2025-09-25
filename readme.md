@@ -7,3 +7,10 @@ and saving them to a file paragraphs.txt
 ```
 cargo run
 ```
+
+file structure: 
+```
+src
+├── main.rs
+└── wikipedia_scraper.rs
+```
